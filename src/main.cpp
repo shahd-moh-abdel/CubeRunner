@@ -1,5 +1,27 @@
 #include "raylib.h"
 
+class Cube {
+public:
+  Vector3 cubePosition = { 0.0f, 0.0f, 0.0f };
+  Vector3 cubeSize = {2.0f, 2.0f, 2.0f};
+
+  void draw(){
+    DrawCube(cubePosition, 2.0f, 2.0f, 2.0f, RED);
+    DrawCubeWiresV(cubePosition, cubeSize, BLACK);
+  }
+
+  void update() {
+    if (IsKeyPressed(KEY_RIGHT))
+      cubePosition.x++;
+    if (IsKeyPressed(KEY_LEFT))
+      cubePosition.x--;
+    if (IsKeyPressed(KEY_UP))
+      cubePosition.z--;
+    if (IsKeyPressed(KEY_DOWN))
+      cubePosition.z++;
+  }
+};
+
 int main() {
   InitWindow(1200,  800, "Cube Runner");
 
@@ -10,9 +32,9 @@ int main() {
   camera.target = (Vector3){ 0.0f, 0.0f, 0.0f }; 
   camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
   camera.fovy = 45.0f;                           
-  camera.projection = CAMERA_PERSPECTIVE;    
+  camera.projection = CAMERA_PERSPECTIVE;
 
-  Vector3 cubePosition = { 0.0f, 0.0f, 0.0f };
+  Cube cube;
   
   SetTargetFPS(60);
 
@@ -22,10 +44,11 @@ int main() {
       ClearBackground(BLUE);
 
       BeginMode3D(camera);
-      DrawCube(cubePosition, 2.0f, 2.0f, 2.0f, RED);
-      DrawGrid(10, 1.0f);
-      EndMode3D();
       
+      cube.draw();
+      cube.update();
+      
+      EndMode3D();
       DrawFPS(10, 10);
       EndDrawing();
     }
