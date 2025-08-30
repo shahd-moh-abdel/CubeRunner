@@ -4,6 +4,8 @@ class Cube {
 public:
   Vector3 cubePosition = { 0.0f, 0.0f, 0.0f };
   Vector3 cubeSize = {2.0f, 2.0f, 2.0f};
+  float speed = 0.5f;
+  float moveSpeed = 8.0f;
 
   void draw(){
     DrawCube(cubePosition, 2.0f, 2.0f, 2.0f, RED);
@@ -11,15 +13,12 @@ public:
   }
 
   void update() {
-    if (IsKeyPressed(KEY_RIGHT))
+    cubePosition.z -= speed;
+    if (IsKeyDown(KEY_RIGHT))
       cubePosition.x++;
-    if (IsKeyPressed(KEY_LEFT))
+    if (IsKeyDown(KEY_LEFT))
       cubePosition.x--;
-    if (IsKeyPressed(KEY_UP))
-      cubePosition.z--;
-    if (IsKeyPressed(KEY_DOWN))
-      cubePosition.z++;
-  }
+    }
 };
 
 int main() {
@@ -40,14 +39,17 @@ int main() {
 
   while(!WindowShouldClose())
     {
+      cube.update();
+      camera.position.z = cube.cubePosition.z + 10.0f;
+      camera.target = cube.cubePosition;
+      
       BeginDrawing();
       ClearBackground(BLUE);
 
       BeginMode3D(camera);
       
-      cube.draw();
-      cube.update();
-      
+      cube.draw();      
+      DrawGrid(100, 2.0);
       EndMode3D();
       DrawFPS(10, 10);
       EndDrawing();
