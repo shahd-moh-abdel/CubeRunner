@@ -1,25 +1,6 @@
 #include "raylib.h"
-
-class Cube {
-public:
-  Vector3 cubePosition = { 0.0f, 0.0f, 0.0f };
-  Vector3 cubeSize = {2.0f, 2.0f, 2.0f};
-  float speed = 0.5f;
-  float moveSpeed = 8.0f;
-
-  void draw(){
-    DrawCube(cubePosition, 2.0f, 2.0f, 2.0f, RED);
-    DrawCubeWiresV(cubePosition, cubeSize, BLACK);
-  }
-
-  void update() {
-    cubePosition.z -= speed;
-    if (IsKeyDown(KEY_RIGHT))
-      cubePosition.x++;
-    if (IsKeyDown(KEY_LEFT))
-      cubePosition.x--;
-    }
-};
+#include "../include/Cube.h"
+#define SCREEN_WIDTH 800
 
 int main() {
   InitWindow(1200,  800, "Cube Runner");
@@ -39,9 +20,9 @@ int main() {
 
   while(!WindowShouldClose())
     {
-      cube.update();
-      camera.position.z = cube.cubePosition.z + 10.0f;
-      camera.target = cube.cubePosition;
+      cube.update(SCREEN_WIDTH);
+      //camera.position.z -= cube.speed;
+      //amera.target.z -= cube.speed;
       
       BeginDrawing();
       ClearBackground(BLUE);
@@ -49,7 +30,8 @@ int main() {
       BeginMode3D(camera);
       
       cube.draw();      
-      DrawGrid(100, 2.0);
+      DrawPlane({0.0f, -25.0f, -25.0f}, {50.0f, 50.0f}, DARKGREEN); 
+ 
       EndMode3D();
       DrawFPS(10, 10);
       EndDrawing();
