@@ -8,8 +8,9 @@ public:
   Vector3 cubeSize = {2.0f, 2.0f, 2.0f};
   float speed = 0.5f;
   float moveSpeed = 0.3f;
-  float gravity = -1.0f;
-  float groundY = 0.0f;
+  float velocityY = 0.0f;   
+  float gravity = -0.8f;
+  float groundY = -24.0f;
 
   void draw(){
     DrawCube(cubePosition, 2.0f, 2.0f, 2.0f, RED);
@@ -18,10 +19,14 @@ public:
 
   void update(int screenW) {
     //cubePosition.z -= speed;
-    cubePosition.y += gravity;
+    velocityY += gravity * GetFrameTime();
 
-    if (cubePosition.y < groundY + cubeSize.y/2) {
+    
+    cubePosition.y += velocityY;
+
+    if (cubePosition.y - cubeSize.y/2 <= groundY) {
       cubePosition.y = groundY + cubeSize.y/2; 
+      velocityY = 0.0f; 
     }
     
     if (IsKeyDown(KEY_RIGHT))
