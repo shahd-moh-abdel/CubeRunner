@@ -8,7 +8,7 @@ int main() {
   SetConfigFlags(FLAG_MSAA_4X_HINT);
 
   Camera3D camera = { 0 };
-  camera.position = (Vector3){ 0.0f, 10.0f, 10.0f };  
+  camera.position = (Vector3){ 0.0f, 15.0f, 10.0f };  
   camera.target = (Vector3){ 0.0f, 0.0f, 0.0f }; 
   camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
   camera.fovy = 45.0f;                           
@@ -21,8 +21,6 @@ int main() {
   while(!WindowShouldClose())
     {
       cube.update(SCREEN_WIDTH);
-      //camera.position.z -= cube.speed;
-      //amera.target.z -= cube.speed;
       
       BeginDrawing();
       ClearBackground(BLUE);
@@ -30,7 +28,7 @@ int main() {
       BeginMode3D(camera);
       
       cube.draw();      
-      DrawPlane({0.0f, -25.0f, -25.0f}, {50.0f, 50.0f}, DARKGREEN); 
+      DrawPlane({0.0f, -25.0f, -23.0f}, {50.0f, 50.0f}, DARKGREEN); 
  
       EndMode3D();
       DrawFPS(10, 10);
