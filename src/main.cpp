@@ -26,8 +26,6 @@ int main() {
     {
       cube.update(SCREEN_WIDTH);
       
-      //UpdateCamera(&camera, CAMERA_FREE);
-      
       BeginDrawing();
       ClearBackground(SKYBLUE);
 
@@ -60,11 +58,22 @@ int main() {
 	std::string finalScore = "Final Score: " + std::to_string(cube.score);
 	int scoreWidth = MeasureText(finalScore.c_str(), 30);
 	DrawText(finalScore.c_str(), SCREEN_WIDTH/2 - scoreWidth/2, SCREEN_HEIGHT/2, 30, WHITE);
-            
+
+	//highscore texts
+	std::string highScoreDisplay = "High Score: " + std::to_string(cube.highScore);
+	int highScoreWidth = MeasureText(highScoreDisplay.c_str(), 25);
+	DrawText(highScoreDisplay.c_str(), SCREEN_WIDTH/2 - highScoreWidth/2, SCREEN_HEIGHT/2 + 30, 25, YELLOW);
+    
+	// Show if new high score achieved
+	if (cube.score == cube.highScore && cube.score > 0) {
+	  const char* newHighText = "NEW HIGH SCORE!";
+	  int newHighWidth = MeasureText(newHighText, 30);
+	  DrawText(newHighText, SCREEN_WIDTH/2 - newHighWidth/2, SCREEN_HEIGHT/2 + 60, 30, GOLD);
+	}
 	const char* restartText = "Press R to Restart";
 	int restartWidth = MeasureText(restartText, 20);
-	DrawText(restartText, SCREEN_WIDTH/2 - restartWidth/2, SCREEN_HEIGHT/2 + 40, 20, LIGHTGRAY);
-            
+	DrawText(restartText, SCREEN_WIDTH/2 - restartWidth/2, SCREEN_HEIGHT/2 + 90, 20, LIGHTGRAY);
+        
 	if (IsKeyPressed(KEY_R)) {
 	  cube.reset();
 	}
@@ -75,3 +84,4 @@ int main() {
   CloseWindow();
   return 0;
 }
+
