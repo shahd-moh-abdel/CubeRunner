@@ -197,6 +197,7 @@ public:
             
       if (monster.active && monster.checkCollision(cubePosition, cubeSize)) {
 	gameOver = true;
+	saveHighScore();
 	playSound(1);
       }
     }
