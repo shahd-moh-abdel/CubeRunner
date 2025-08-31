@@ -73,7 +73,7 @@ public:
   }
 
   void spawnMonster() {
-    float randomX = (rand() % 21 - 10) * 2.0f; 
+    float randomX = (rand() % 21 - 10); 
     monsters.push_back(Monster(randomX, 1.0f, -25.0f));
   }
 
