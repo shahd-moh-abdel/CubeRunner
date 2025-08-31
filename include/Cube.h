@@ -5,6 +5,9 @@
 #include <vector>
 #include <cstdlib>
 #include <ctime>
+#include <cmath>
+#include <fstream>
+#include <algorithm>
 
 class Monster {
 public:
@@ -12,18 +15,32 @@ public:
     Vector3 size = {2.0f, 2.0f, 2.0f};
     float speed = 0.2f;
     bool active = true;
+    float pulseTimer = 0.0f;
 
-    Monster(float x, float y, float z) : position({x, y, z}) {}
+    Monster(float x, float y, float z) : position({x, y, z}) {
+      pulseTimer = (float)(rand() % 100) / 100.0f * 6.28f; 
+    }
 
     void update() {
-        position.z += speed; 
+        position.z += speed;
+	pulseTimer += 0.1f;
     }
 
     void draw() {
-        if (active) {
-            DrawCube(position, size.x, size.y, size.z, PURPLE);
-            DrawCubeWiresV(position, size, BLACK);
-        }
+      if (!active) return;
+      
+      float pulse = 1.0f + sin(pulseTimer) * 0.1f;
+      Vector3 drawSize = {size.x * pulse, size.y * pulse, size.z * pulse};
+        
+      Color baseColor = {72, 9, 7, 255}; 
+      Color edgeColor = {163, 40, 35, 255};
+        
+      DrawCube(position, drawSize.x, drawSize.y, drawSize.z, baseColor);
+      DrawCubeWiresV(position, drawSize, edgeColor);
+      
+      DrawCube(position, size.x, size.y, size.z, edgeColor);
+      DrawCubeWiresV(position, size, BLACK);
+        
     }
 
     bool isOffScreen() {
@@ -58,13 +75,60 @@ public:
   float monsterSpawnInterval = 120.0f;
   int score = 0;
   bool gameOver = false;
+  int highScore = 0;
+
+  //sound effects
+  Sound jumpSound;
+  Sound gameoverSound;
+  Sound scoreSound;
+  bool soundLoaded = false;
 
   Cube() {
     srand(time(nullptr));
+    loadHighScore();
+    loadSounds();
+  }
+
+  void loadSounds() {
+    Wave jumpWave = LoadWaveFromMemory("./assets/sounds/jump.wav", nullptr, 0);
+    Wave gameoverWave = LoadWaveFromMemory("./assets/sounds/gameover.wav", nullptr, 0);
+    Wave scoreWave = LoadWaveFromMemory(".wav", nullptr, 0);
+
+    soundLoaded = true;
+  }
+
+  void playSound(int soundType) {
+    if (!soundLoaded) return;
+
+    switch (soundType) {
+    case 0: PlaySound(jumpSound); break;
+    case 1: PlaySound(gameoverSound); break;
+    case 2: PlaySound(scoreSound); break;
+      
+    }
+  }
+
+  void loadHighScore() {
+    std::ifstream file("highscore.txt");
+    if (file.is_open()) {
+      file >> highScore;
+      file.close();
+    }
+  }
+
+  void saveHighScore() {
+    if (score > highScore) {
+      highScore = score;
+      std::ofstream file("highscore.txt");
+      if (file.is_open()) {
+	file << highScore;
+	file.close();
+      }
+    }
   }
 
   void draw(){
-    DrawCubeV(cubePosition, cubeSize, RED);
+    DrawCubeV(cubePosition, cubeSize, (Color){25, 43, 78, 255});
     DrawCubeWiresV(cubePosition, cubeSize, BLACK);
 
     for (auto& monster : monsters) {
@@ -80,12 +144,10 @@ public:
   void update(int screenW) {
     if (gameOver) return;
     
-    //cubePosition.z -= speed;
     velocityY += gravity * GetFrameTime();
 
     
     cubePosition.y += velocityY;
-
     
     bool onPlatform = (cubePosition.x >= -25.0f && cubePosition.x <= 25.0f && 
                        cubePosition.z >= -25.0f && cubePosition.z <= 25.0f);
@@ -102,6 +164,7 @@ public:
 
     if ((IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W)) && !isJumping) {
       jumpSpeed = 0.4f;
+      playSound(0);
       isJumping = true;
     }
 
@@ -134,6 +197,7 @@ public:
             
       if (monster.active && monster.checkCollision(cubePosition, cubeSize)) {
 	gameOver = true;
+	playSound(1);
       }
     }
 
