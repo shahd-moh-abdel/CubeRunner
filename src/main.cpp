@@ -7,10 +7,12 @@
 int main() {
   InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Cube Runner");
 
+  InitAudioDevice();
+
   SetConfigFlags(FLAG_MSAA_4X_HINT);
 
   Camera3D camera = { 0 };
-  camera.position = (Vector3){ 0.0f, 15.0f, 10.0f };  
+  camera.position = (Vector3){ 0.0f, 15.0f, 20.0f };  
   camera.target = (Vector3){ 0.0f, 0.0f, 0.0f }; 
   camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
   camera.fovy = 45.0f;                           
@@ -23,6 +25,8 @@ int main() {
   while(!WindowShouldClose())
     {
       cube.update(SCREEN_WIDTH);
+      
+      //UpdateCamera(&camera, CAMERA_FREE);
       
       BeginDrawing();
       ClearBackground(SKYBLUE);

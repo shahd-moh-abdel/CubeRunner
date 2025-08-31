@@ -59,7 +59,7 @@ public:
 
 class Cube {
 public:
-  Vector3 cubePosition = { 0.0f, 0.0f, 0.0f };
+  Vector3 cubePosition = { 0.0f, 0.0f, 10.0f };
   Vector3 cubeSize = {2.0f, 2.0f, 2.0f};
   float speed = 0.5f;
   float moveSpeed = 0.3f;
@@ -90,9 +90,9 @@ public:
   }
 
   void loadSounds() {
-    Wave jumpWave = LoadWaveFromMemory("./assets/sounds/jump.wav", nullptr, 0);
-    Wave gameoverWave = LoadWaveFromMemory("./assets/sounds/gameover.wav", nullptr, 0);
-    Wave scoreWave = LoadWaveFromMemory(".wav", nullptr, 0);
+    jumpSound = LoadSound("./assets/sounds/jump.wav");
+    gameoverSound = LoadSound("./assets/sounds/gameover.wav");
+    scoreSound = LoadSound("./assets/sounds/score.wav");
 
     soundLoaded = true;
   }
@@ -204,7 +204,8 @@ public:
     for (int i = monsters.size() - 1; i >= 0; i--) {
       if (monsters[i].isOffScreen()) {
 	if (monsters[i].active) {
-	  score += 10; 
+	  score += 10;
+	  playSound(2);
 	}
 	monsters.erase(monsters.begin() + i);
       }
@@ -213,7 +214,7 @@ public:
   }
 
   void reset() {
-    cubePosition = { 0.0f, 1.0f, 0.0f };
+    cubePosition = { 0.0f, 0.0f, 10.0f };
     monsters.clear();
     score = 0;
     gameOver = false;
