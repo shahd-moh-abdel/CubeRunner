@@ -157,9 +157,9 @@ public:
       velocityY = 0.0f; 
     }
     
-    if (IsKeyDown(KEY_RIGHT))
+    if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D))
       cubePosition.x += moveSpeed;
-    if (IsKeyDown(KEY_LEFT))
+    if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A))
       cubePosition.x -= moveSpeed;
 
     if ((IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W)) && !isJumping) {
