@@ -16,7 +16,7 @@ public:
     Monster(float x, float y, float z) : position({x, y, z}) {}
 
     void update() {
-        position.z += speed; // Move towards player
+        position.z += speed; 
     }
 
     void draw() {
@@ -27,7 +27,7 @@ public:
     }
 
     bool isOffScreen() {
-        return position.z > 15.0f; // Past the player
+        return position.z > 15.0f; 
     }
 
     bool checkCollision(Vector3 playerPos, Vector3 playerSize) {
@@ -73,7 +73,7 @@ public:
   }
 
   void spawnMonster() {
-    float randomX = (rand() % 21 - 10) * 2.0f; // Random x between -20 and 20
+    float randomX = (rand() % 21 - 10) * 2.0f; 
     monsters.push_back(Monster(randomX, 1.0f, -25.0f));
   }
 
@@ -115,6 +115,48 @@ public:
 	jumpSpeed = 0.0f;
       }
     }
+
+    
+    if (cubePosition.x < -23.0f) cubePosition.x = -23.0f;
+    if (cubePosition.x > 23.0f) cubePosition.x = 23.0f;
+
+    monsterSpawnTimer++;
+    if (monsterSpawnTimer >= monsterSpawnInterval) {
+      spawnMonster();
+      monsterSpawnTimer = 0.0f;
+      if (monsterSpawnInterval > 60.0f) {
+	monsterSpawnInterval -= 2.0f;
+      }
+    }
+
+    for (auto& monster : monsters) {
+      monster.update();
+            
+      if (monster.active && monster.checkCollision(cubePosition, cubeSize)) {
+	gameOver = true;
+      }
+    }
+
+    for (int i = monsters.size() - 1; i >= 0; i--) {
+      if (monsters[i].isOffScreen()) {
+	if (monsters[i].active) {
+	  score += 10; 
+	}
+	monsters.erase(monsters.begin() + i);
+      }
+    }
+
+  }
+
+  void reset() {
+    cubePosition = { 0.0f, 1.0f, 0.0f };
+    monsters.clear();
+    score = 0;
+    gameOver = false;
+    monsterSpawnTimer = 0.0f;
+    monsterSpawnInterval = 120.0f;
+    isJumping = false;
+    jumpSpeed = 0.0f;
   }
 };
 
